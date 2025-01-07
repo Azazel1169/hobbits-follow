@@ -12,26 +12,37 @@ const hobbits = [
 ];
 
 server.get("/hobbits", (req, res) => {
-  // route handler code here.
-
-  res.status(200).json(hobbits);
+  const sortField = req.query.sortby || id;
+  const hobbits = [
+    {
+      id: 1,
+      name: "Samwise Gamgee",
+    },
+    {
+      id: 2,
+      name: "Frodo Baggins",
+    },
+  ];
+  const response = hobbits.sort((a, b) =>
+    a[sortField] < b[sortField] ? -1 : 1
+  );
+  res.status(200).json(response);
 });
 server.get("/hobbits/:id", (req, res) => {
   res.status(200).json(hobbits.find((hob) => hob.id == req.params.id));
 });
 server.post("/hobbits", (req, res) => {
-  hobbits.push({ id: getId(), name: req.body.name });
-  res.status(201).json(hobbits);
+  res.status(201).json({ url: "/hobbits", operation: "POST" });
 });
-server.put("/hobbits/:id", (req, res) => {
-  hobbits = hobbits.map((hob) =>
-    hob.id == req.params.id ? { ...hob, name: req.body.name } : hob
-  );
-  res.status(200).json(hobbits);
+server.put("/hobbits", (req, res) => {
+  res.status(200).json({ url: "/hobbits", operation: "PUT" });
 });
 server.delete("/hobbits/:id", (req, res) => {
-  hobbits = hobbits.filter((hob = hob.id != req.params.id));
-  res.status(200).json(hobbits);
+  const id = req.params.id;
+  res.status(200).json({
+    url: `/hobbits/${id}`,
+    operation: `DELETE for hobbit with id ${id}`,
+  });
 });
 
 // Pulling data from the db file
